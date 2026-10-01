@@ -6,7 +6,7 @@ DIST        := dist
 APP_BUNDLE  := $(DIST)/$(APP_NAME).app
 PYTHON      := python3
 
-.PHONY: help build run test app install clean mcp mcp-config mcp-install-cursor python-test
+.PHONY: help build run test app install clean mcp mcp-config mcp-install-cursor python-test icon
 
 help:
 	@echo "make build              - compila em release"
@@ -17,6 +17,7 @@ help:
 	@echo "make mcp                - inicia o servidor MCP em stdio"
 	@echo "make mcp-config         - imprime o JSON de configuracao do MCP"
 	@echo "make mcp-install-cursor - registra o servidor em ~/.cursor/mcp.json"
+	@echo "make icon               - gera Resources/AppIcon.icns a partir do PNG fonte"
 
 build:
 	swift build -c release
@@ -39,6 +40,7 @@ app: build
 	    -e 's/__VERSION__/$(VERSION)/g' \
 	    Resources/Info.plist.in > $(APP_BUNDLE)/Contents/Info.plist
 	cp -R python $(APP_BUNDLE)/Contents/Resources/python
+	cp Resources/AppIcon.icns $(APP_BUNDLE)/Contents/Resources/AppIcon.icns
 	codesign --force --deep --sign - $(APP_BUNDLE) 2>/dev/null || true
 	@echo "OK -> $(APP_BUNDLE)"
 
@@ -55,6 +57,9 @@ mcp-config:
 
 mcp-install-cursor: app
 	./scripts/install-mcp.sh cursor
+
+icon:
+	./scripts/make-icon.sh
 
 clean:
 	swift package clean

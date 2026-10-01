@@ -8,3 +8,4 @@ __pycache__/
 *.pyo
 .python-version
 .swiftpm/
+Resources/AppIcon.iconset/
